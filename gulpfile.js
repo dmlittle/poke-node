@@ -1,12 +1,13 @@
-
 var gulp       = require('gulp');
 var plugins    = require('gulp-load-plugins')();
+var del        = require('del');
 var argv       = require('yargs').argv;
 var stylish    = require('jshint-stylish');
+var vinylPaths = require('vinyl-paths');
 
 var paths = {
   sourceFiles: 'lib/**/*.js',
-  testFiles: 'test/**/*.js',
+  testFiles: 'test/*.js',
   gulpFile: 'gulpfile.js',
 };
 
@@ -28,7 +29,7 @@ gulp.task('cover', function () {
       process.env[key] = envVars[key];
     });
   }
-  return gulp.src(paths.sourceFiles)
+  return gulp.src([paths.sourceFiles, paths.testFiles, paths.gulpFile])
     .pipe(plugins.istanbul());
 });
 
@@ -39,31 +40,39 @@ gulp.task('coveralls', function () {
 
 gulp.task('testCI', ['lint', 'style', 'cover'], function () {
   if (process.env.NODE_ENV !== 'test') {
-    gulp.src('coverage')
-    .pipe(plugins.clean());
+    gulp.src(process.env.COVERAGE_DIR + '/coverage')
+      .pipe(vinylPaths(del));
+    Object.keys(envVars).forEach(function (key) {
+      process.env[key] = envVars[key];
+    });
   }
 
   var options = {
-    dir: 'coverage',
+    dir: process.env.COVERAGE_DIR + '/coverage',
     reporters: ['lcov', 'json', 'text', 'text-summary'],
-    reportOpts: { dir: 'coverage' }
+    reportOpts: { dir: process.env.COVERAGE_DIR + '/coverage' }
   };
 
-  return gulp.src(paths.testFiles)
-    .pipe(plugins.mocha({
-      reporter: 'spec',
-      timeout: TIMEOUT,
-      grep: argv.grep
-    }))
+  return gulp.src(paths.sourceFiles)
+    .pipe(plugins.istanbul())
+    .pipe(plugins.istanbul.hookRequire())
     .on('error', function (error) {
       plugins.util.log(plugins.util.colors.red(error.message));
       process.exit(1);
     })
-    .pipe(plugins.istanbul.writeReports(options))
-    .pipe(plugins.exit());
+    .on('finish', function () {
+      gulp.src(paths.testFiles)
+      .pipe(plugins.mocha({
+        reporter: 'spec',
+        timeout: TIMEOUT,
+        grep: argv.grep
+      }))
+      .pipe(plugins.istanbul.writeReports(options))
+      .pipe(plugins.exit());
+    });
 });
 
-gulp.task('test', ['lint', 'style'], function () {
+gulp.task('test', function () {
   return gulp.src(paths.testFiles)
     .pipe(plugins.mocha({
       reporter: 'spec',
@@ -100,4 +109,10 @@ gulp.task('lint', function () {
     .pipe(plugins.jshint())
     .pipe(plugins.jshint.reporter(stylish))
     .pipe(plugins.jshint.reporter('fail'));
+});
+
+gulp.task('lint-nofail', function () {
+  gulp.src([paths.sourceFiles, paths.testFiles, paths.gulpFile])
+    .pipe(plugins.jshint())
+    .pipe(plugins.jshint.reporter(stylish));
 });

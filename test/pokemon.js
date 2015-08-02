@@ -35,6 +35,13 @@ describe('Pokemon', function () {
       });
     });
 
+    it('should fetch a pokemon', function (done) {
+      PokeAPI.pokemon.retrieve(undefined, function (err,res) {
+        expect(res.meta.next).to.eql('/api/v1/pokemon/?limit=1&offset=1');
+        done();
+      });
+    });
+
   });
 
 });

@@ -9,7 +9,7 @@
     "wrapper",
     "pokeapi.co"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/dmlittle/poke-node",
   "author": "Donald Little <dmlittle@mit.edu>",
   "main": "./lib/index",
