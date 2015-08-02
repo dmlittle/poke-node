@@ -1,0 +1,55 @@
+{
+  "name": "poke-node",
+  "description": "Node.js wrapper for PokeAPI",
+  "keywords": [
+    "PokeAPI",
+    "poke-node",
+    "rest",
+    "api",
+    "wrapper",
+    "pokeapi.co"
+  ],
+  "version": "1.0.0",
+  "homepage": "https://github.com/dmlittle/poke-node",
+  "author": "Donald Little <dmlittle@mit.edu>",
+  "main": "./lib/index",
+  "scripts": {
+    "test": "gulp testCI",
+    "enforce": "gulp enforce",
+    "lint": "gulp lint",
+    "style": "gulp style",
+    "coveralls": "gulp coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmlittle/poke-node.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dmlittle/poke-node/issues"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "request": "^2.60.0"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "coveralls": "^2.11.3",
+    "del": "^1.2.0",
+    "gulp": "^3.9.0",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-exit": "0.0.2",
+    "gulp-clean": "^0.3.1",
+    "gulp-istanbul": "~0.8.1",
+    "gulp-istanbul-enforcer": "^1.0.3",
+    "gulp-jscs": "^1.6.0",
+    "gulp-jshint": "~1.10.0",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-mocha": "~2.0.1",
+    "gulp-util": "^3.0.4",
+    "jshint-stylish": "^2.0.1",
+    "mocha": "^2.2.5",
+    "vinyl-paths": "^1.0.0",
+    "yargs": "^3.16.1"
+  }
+}
